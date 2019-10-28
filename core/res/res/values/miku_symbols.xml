@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-   Copyright (C) 2021 MikuUI
+   Copyright (C) 2021 Miku UI
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,5 +29,8 @@
   <java-symbol name="reboot_system_message" type="string" />
   <java-symbol type="array" name="config_rebootActionsList" />
   <java-symbol type="array" name="values_globalActionsList" />
+
+  <!-- QQS Height -->
+  <java-symbol type="dimen" name="quick_qs_total_height" />
 
 </resources>
