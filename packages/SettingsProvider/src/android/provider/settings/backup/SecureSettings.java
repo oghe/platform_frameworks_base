@@ -192,5 +192,6 @@ public class SecureSettings {
         Settings.Secure.LOCKSCREEN_SHOW_CONTROLS,
         Settings.Secure.LOCKSCREEN_SHOW_WALLET,
         Settings.Secure.BACK_GESTURE_HEIGHT,
+        Settings.Secure.SHOW_BACK_ARROW_GESTURE,
     };
 }
