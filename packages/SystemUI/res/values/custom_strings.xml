@@ -21,6 +21,11 @@
     <string name="global_action_reboot_bootloader">Bootloader</string>
     <string name="global_action_settings">Settings</string>
 
+    <!-- DataSwitch Tile -->
+    <string name="qs_data_switch_label">Switch data card</string>
+    <string name="qs_data_switch_changed_1">Using SIM 1 for Mobile data</string>
+    <string name="qs_data_switch_changed_2">Using SIM 2 for Mobile data</string>
+
     <!-- CPUInfo tile -->
     <string name="quick_settings_cpuinfo_label">CPU Info</string>
     <string name="accessibility_quick_settings_cpuinfo_off">CPU Info off</string>
