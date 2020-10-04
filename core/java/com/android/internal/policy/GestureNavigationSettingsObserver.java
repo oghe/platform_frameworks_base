@@ -126,6 +126,4 @@ public class GestureNavigationSettingsObserver extends ContentObserver {
                 mContext.getContentResolver(), side, 1.0f, UserHandle.USER_CURRENT);
         return (int) (inset * scale);
     }
-
-
 }
