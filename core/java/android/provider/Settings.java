@@ -10220,6 +10220,11 @@ public final class Settings {
         public static final String SHOW_BACK_ARROW_GESTURE = "show_back_arrow_gesture";
 
         /**
+         * @hide
+         */
+        public static final String GESTURE_HANDLE_HIDE = "navbar_gesture_handle_hide";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
