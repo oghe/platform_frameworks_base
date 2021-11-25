@@ -92,5 +92,6 @@ public class SystemSettings {
         Settings.System.ARTWORK_MEDIA_BACKGROUND_BLUR_RADIUS,
         Settings.System.ARTWORK_MEDIA_BACKGROUND_ALPHA,
         Settings.System.BACK_GESTURE_HAPTIC,
+        Settings.System.FULLSCREEN_GESTURES,
     };
 }
