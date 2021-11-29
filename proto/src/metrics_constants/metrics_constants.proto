@@ -7438,5 +7438,6 @@ message MetricsEvent {
     
     //Miku Metrics
     MIKU = 3939;
+
   }
 }
