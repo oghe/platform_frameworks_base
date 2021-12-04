@@ -16,13 +16,13 @@
   -->
 
 <resources>
-    <bool name="are_flags_overrideable">false</bool>
+    <bool name="are_flags_overrideable">true</bool>
 
     <bool name="flag_notification_pipeline2">true</bool>
     <bool name="flag_notification_pipeline2_rendering">false</bool>
     <bool name="flag_notif_updates">true</bool>
 
-    <bool name="flag_monet">false</bool>
+    <bool name="flag_monet">true</bool>
 
     <!-- b/171917882 -->
     <bool name="flag_notification_twocolumn">false</bool>
