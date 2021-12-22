@@ -91,8 +91,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     private DarkIconManager mDarkIconManager;
     private View mOperatorNameFrame;
     private final CommandQueue mCommandQueue;
-    private View mTickerViewFromStub;
-    private View mTickerViewContainer;
     private View mLyricViewFromStub;
     private View mLyricViewContainer;
     private final OngoingCallController mOngoingCallController;
@@ -176,7 +174,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
         showClock(false);
         initEmergencyCryptkeeperText();
         initOperatorName();
-        initTickerView();
         initLyricView();
         initNotificationIconArea();
         mAnimationScheduler.addCallback(this);
@@ -255,12 +252,10 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
             if ((state1 & DISABLE_SYSTEM_INFO) != 0 || ((state2 & DISABLE2_SYSTEM_ICONS) != 0)) {
                 hideSystemIconArea(animate);
                 hideOperatorName(animate);
-                hideTicker(animate);
                 hideLyric(animate);
             } else {
                 showSystemIconArea(animate);
                 showOperatorName(animate);
-                showTicker(animate);
                 showLyric(animate);
             }
         }
@@ -383,18 +378,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     public void hideLyric(boolean animate) {
         if (mLyricViewContainer != null) {
             animateHide(mLyricViewContainer, animate);
-        }
-    }
-
-    public void showTicker(boolean animate) {
-        if (mTickerViewContainer != null) {
-            animateShow(mTickerViewContainer, animate);
-        }
-    }
-    
-    public void hideTicker(boolean animate) {
-        if (mTickerViewContainer != null) {
-            animateHide(mTickerViewContainer, animate);
         }
     }
 
@@ -538,18 +521,6 @@ public class CollapsedStatusBarFragment extends Fragment implements CommandQueue
     @Override
     public void onDozingChanged(boolean isDozing) {
         disable(getContext().getDisplayId(), mDisabled1, mDisabled2, false /* animate */);
-    }
-
-    private void initTickerView() {
-        mTickerViewContainer = mStatusBar.findViewById(R.id.ticker_container);
-        View tickerStub = mStatusBar.findViewById(R.id.ticker_stub);
-        if (mTickerViewFromStub == null && tickerStub != null) {
-            mTickerViewFromStub = ((ViewStub) tickerStub).inflate();
-        }
-        TickerView tickerView = (TickerView) mStatusBar.findViewById(R.id.tickerText);
-        ImageSwitcher tickerIcon = (ImageSwitcher) mStatusBar.findViewById(R.id.tickerIcon);
-        mStatusBarComponent.createTicker(
-                getContext(), mStatusBar, tickerView, tickerIcon, mTickerViewFromStub);
     }
 
     private void initLyricView() {

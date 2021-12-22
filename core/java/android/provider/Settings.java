@@ -6663,13 +6663,6 @@ public final class Settings {
         public static final String STATUS_BAR_SHOW_LYRIC = "status_bar_show_lyric";
 
         /**
-         * Whether to show the notification ticker on the status bar
-         * @hide
-         */
-	@Readable
-        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
-
-        /**
          * Ticker animation
          * 0: Fade animation
          * 1: Scrolling ticker

@@ -726,7 +726,6 @@ public class NotificationEntryManager implements
         // Restart the ticker if it's still running
         if (updateTicker && isForCurrentUser) {
             if (mStatusBar != null) {
-                mStatusBar.haltTicker();
                 mStatusBar.tick(notification, false, false, null, null);
             }
         }
