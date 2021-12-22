@@ -309,14 +309,8 @@ public class StatusBar extends SystemUI implements DemoMode,
             "com.android.systemui.statusbar.banner_action_cancel";
     private static final String BANNER_ACTION_SETUP =
             "com.android.systemui.statusbar.banner_action_setup";
-    private static final String STATUS_BAR_SHOW_TICKER =
-            Settings.Secure.STATUS_BAR_SHOW_TICKER;
-    private static final String STATUS_BAR_TICKER_ANIMATION_MODE =
-            Settings.Secure.STATUS_BAR_TICKER_ANIMATION_MODE;
     private static final String STATUS_BAR_SHOW_LYRIC =
             Settings.Secure.STATUS_BAR_SHOW_LYRIC;
-    private static final String STATUS_BAR_TICKER_TICK_DURATION =
-            Settings.Secure.STATUS_BAR_TICKER_TICK_DURATION;
 
     public static final String TAG = "StatusBar";
     public static final boolean DEBUG = false;
@@ -488,9 +482,6 @@ public class StatusBar extends SystemUI implements DemoMode,
     // status bar notification ticker
     private int mTickerEnabled;
     private Ticker mTicker;
-    private boolean mTicking;
-    private int mTickerAnimationMode;
-    private int mTickerTickDuration;
 
     // lyric ticker
     public LyricTicker mLyricTicker;
@@ -986,10 +977,7 @@ public class StatusBar extends SystemUI implements DemoMode,
         mStatusBarStateController.addCallback(this,
                 SysuiStatusBarStateController.RANK_STATUS_BAR);
         
-        mTunerService.addTunable(this, STATUS_BAR_SHOW_TICKER);
         mTunerService.addTunable(this, STATUS_BAR_SHOW_LYRIC);
-        mTunerService.addTunable(this, STATUS_BAR_TICKER_ANIMATION_MODE);
-        mTunerService.addTunable(this, STATUS_BAR_TICKER_TICK_DURATION);
 
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mDreamManager = IDreamManager.Stub.asInterface(
@@ -1744,16 +1732,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         return mStatusBarWindowController.getStatusBarHeight();
     }
 
-    public void createTicker(Context ctx, View statusBarView,
-                             TickerView tickerTextView, ImageSwitcher tickerIcon, View tickerView) {
-        if (mTicker == null) {
-            mTicker = new MyTicker(ctx, statusBarView);
-        }
-        ((MyTicker)mTicker).setView(tickerView);
-        tickerTextView.setTicker(mTicker);
-        mTicker.setViews(tickerTextView, tickerIcon);
-     }
-
     public void createLyricTicker(Context ctx, View statusBarView,
                              TickerView tickerTextView, ImageSwitcher tickerIcon, View tickerView) {
         mLyricEnabled = true;
@@ -1931,12 +1909,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (areNotificationAlertsDisabled()) {
                 mHeadsUpManager.releaseAllImmediately();
             }
-        }
-
-        if ((diff1 & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0
-                && (state1 & StatusBarManager.DISABLE_NOTIFICATION_ICONS) != 0
-                && mTicking) {
-            haltTicker();
         }
 
         if ((diff2 & StatusBarManager.DISABLE2_QUICK_SETTINGS) != 0) {
@@ -2804,7 +2776,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     public void tick(StatusBarNotification n, boolean firstTime, boolean isMusic,
                       MediaMetadata metaMediaData, String notificationText) {
-        if (mTicker == null || mTickerEnabled == 0) return;
+	if (mTicker == null || mTickerEnabled ==0) return;
 
         // no ticking on keyguard, we have carrier name in the statusbar
         if (isKeyguardShowing()) return;
@@ -2915,93 +2887,6 @@ public class StatusBar extends SystemUI implements DemoMode,
         };
     }
 
-    private class MyTicker extends Ticker {
-
-        // the inflated ViewStub
-        public View mTickerView;
-
-        MyTicker(Context context, View sb) {
-            super(context, sb, mTickerAnimationMode, mTickerTickDuration);
-            if (mTickerEnabled == 0) {
-                Log.w(TAG, "MyTicker instantiated with mTickerEnabled=0", new Throwable());
-            }
-        }
-
-        public void setView(View tv) {
-            mTickerView = tv;
-        }
-
-        @Override
-        public void tickerStarting() {
-            if (mTicker == null || mTickerEnabled == 0) return;
-            mTicking = true;
-            Animation outAnim, inAnim;
-            if (mTickerAnimationMode == 1) {
-                outAnim = loadAnim(com.android.internal.R.anim.push_up_out, null);
-                inAnim = loadAnim(com.android.internal.R.anim.push_up_in, null);
-            } else {
-                outAnim = loadAnim(true, null);
-                inAnim = loadAnim(false, null);
-            }
-            mStatusBarContent.setVisibility(View.GONE);
-            mStatusBarContent.startAnimation(outAnim);
-            mCenterArea.setVisibility(View.GONE);
-            mCenterArea.startAnimation(outAnim);
-            if (mTickerView != null) {
-                mTickerView.setVisibility(View.VISIBLE);
-                mTickerView.startAnimation(inAnim);
-            }
-        }
-
-        @Override
-        public void tickerDone() {
-            Animation outAnim, inAnim;
-            if (mTickerAnimationMode == 1) {
-                outAnim = loadAnim(com.android.internal.R.anim.push_up_out, mTickingDoneListener);
-                inAnim = loadAnim(com.android.internal.R.anim.push_up_in, null);
-            } else {
-                outAnim = loadAnim(true, mTickingDoneListener);
-                inAnim = loadAnim(false, null);
-            }
-            mStatusBarContent.setVisibility(View.VISIBLE);
-            mStatusBarContent.startAnimation(inAnim);
-            mCenterArea.setVisibility(View.VISIBLE);
-            mCenterArea.startAnimation(inAnim);
-            if (mTickerView != null) {
-                mTickerView.setVisibility(View.GONE);
-                mTickerView.startAnimation(outAnim);
-            }
-        }
-
-        @Override
-        public void tickerHalting() {
-            if (mStatusBarContent.getVisibility() != View.VISIBLE) {
-                mStatusBarContent.setVisibility(View.VISIBLE);
-                mStatusBarContent.startAnimation(loadAnim(false, null));
-                mCenterArea.setVisibility(View.VISIBLE);
-                mCenterArea.startAnimation(loadAnim(false, null));
-            }
-            if (mTickerView != null) {
-                mTickerView.setVisibility(View.GONE);
-                // we do not animate the ticker away at this point, just get rid of it (b/6992707)
-            }
-        }
-
-        @Override
-        public void onDarkChanged(Rect area, float darkIntensity, int tint) {
-            applyDarkIntensity(area, mTickerView, tint);
-        }
-        Animation.AnimationListener mTickingDoneListener = new Animation.AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
-                mTicking = false;
-            }
-            public void onAnimationRepeat(Animation animation) {
-            }
-            public void onAnimationStart(Animation animation) {
-            }
-        };
-    }
-
     private Animation loadAnim(boolean outAnim, Animation.AnimationListener listener) {
         AlphaAnimation animation = new AlphaAnimation((outAnim ? 1.0f : 0.0f), (outAnim ? 0.0f : 1.0f));
         Interpolator interpolator = AnimationUtils.loadInterpolator(mContext,
@@ -3024,26 +2909,12 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     public boolean isMusicTickerEnabled() {
-        return mTicker != null && mTickerEnabled == 2;
+        return mLyricTicker != null && mLyricEnabled != false;
     }
 
     public void resetTrackInfo() {
         if (mTicker != null) {
             mTicker.resetShownMediaMetadata();
-        }
-    }
-
-    public Ticker getTicker() {
-        return mTicker;
-    }
-
-    public boolean isTickerEnabled() {
-        return mTicker != null && mTickerEnabled != 0;
-    }
-
-    public void haltTicker() {
-        if (mTicker != null && mTickerEnabled != 0) {
-            mTicker.halt();
         }
     }
 
@@ -3068,10 +2939,6 @@ public class StatusBar extends SystemUI implements DemoMode,
             pw.println("  mStackScroller: " + viewInfo(mStackScroller)
                     + " scroll " + mStackScroller.getScrollX()
                     + "," + mStackScroller.getScrollY());
-            pw.println("  mTickerEnabled=" + mTickerEnabled);
-            if (mTickerEnabled != 0) {
-                pw.println("  mTicking=" + mTicking);
-            }
         }
 
         pw.print("  mInteractingWindows="); pw.println(mInteractingWindows);
@@ -4086,7 +3953,6 @@ public class StatusBar extends SystemUI implements DemoMode,
      */
     protected void updateTheme() {
 
-        haltTicker();
         haltLyricTicker();
 
         // Lock wallpaper defines the color of the majority of the views, hence we'll use it
@@ -5136,24 +5002,9 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (STATUS_BAR_SHOW_TICKER.equals(key)) {
-            mTickerEnabled =
-                    TunerService.parseInteger(newValue, 0);
-        } else if (STATUS_BAR_SHOW_LYRIC.equals(key)) {
+        if (STATUS_BAR_SHOW_LYRIC.equals(key)) {
             mLyricEnabled =
                     TunerService.parseIntegerSwitch(newValue, false);
-        } else if (STATUS_BAR_TICKER_ANIMATION_MODE.equals(key)) {
-            mTickerAnimationMode =
-                    TunerService.parseInteger(newValue, 1);
-            if (mTicker != null) {
-                mTicker.updateAnimation(mTickerAnimationMode);
-            }
-        } else if (STATUS_BAR_TICKER_TICK_DURATION.equals(key)) {
-            mTickerTickDuration =
-                    TunerService.parseInteger(newValue, 3000);
-            if (mTicker != null) {
-                mTicker.updateTickDuration(mTickerTickDuration);
-            }
         }
     }
 

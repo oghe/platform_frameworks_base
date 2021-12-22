@@ -723,14 +723,6 @@ public class NotificationEntryManager implements
         boolean updateTicker = oldSbn.getNotification().tickerText != null
                 && !TextUtils.equals(oldSbn.getNotification().tickerText,
                 entry.getSbn().getNotification().tickerText);
-        // Restart the ticker if it's still running
-        if (updateTicker && isForCurrentUser) {
-            if (mStatusBar != null) {
-                mStatusBar.haltTicker();
-                mStatusBar.tick(notification, false, false, null, null);
-            }
-        }
-
 
         for (NotificationEntryListener listener : mNotificationEntryListeners) {
             listener.onPostEntryUpdated(entry);

@@ -314,12 +314,6 @@ public class StatusBarNotificationPresenter implements NotificationPresenter,
                 && !mNotificationPanel.isTracking() && !mNotificationPanel.isQsExpanded()
                 && mStatusBarStateController.getState() == StatusBarState.SHADE_LOCKED
                         && !isCollapsing()) {
-                // Cancel the ticker if it's still running
-                if (mStatusBar != null && mStatusBar.isTickerEnabled()) {
-                    try {
-                        mStatusBar.getTicker().removeEntry(old);
-                    } catch (Exception e) {}
-                }
                 if (mStatusBar != null && mStatusBar.mLyricTicker != null && mStatusBar.mLyricEnabled) {
                     try {
                         mStatusBar.mLyricTicker.removeEntry(old);
