@@ -5187,34 +5187,6 @@ public final class Settings {
          */
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
 
-	/**
-         * Whether to show the lyric on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_SHOW_LYRIC = "status_bar_show_lyric";
-
-        /**
-         * Whether to show the notification ticker on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
-
-        /**
-         * Ticker animation
-         * 0: Fade animation
-         * 1: Scrolling ticker
-         * @hide
-         */
-        public static final String STATUS_BAR_TICKER_ANIMATION_MODE =
-                "status_bar_ticker_animation_mode";
-
-        /**
-         * Status bar ticker duration in milliseconds.
-         * @hide
-         */
-        public static final String STATUS_BAR_TICKER_TICK_DURATION =
-                "status_bar_ticker_tick_duration";
-
         /**
          * Wheter to show network traffic indicator in statusbar
          * @hide
@@ -6682,6 +6654,38 @@ public final class Settings {
         @SystemApi
         @Readable
         public static final String USER_SETUP_COMPLETE = "user_setup_complete";
+
+	/**
+         * Whether to show the lyric on the status bar
+         * @hide
+         */
+	@Readable
+        public static final String STATUS_BAR_SHOW_LYRIC = "status_bar_show_lyric";
+
+        /**
+         * Whether to show the notification ticker on the status bar
+         * @hide
+         */
+	@Readable
+        public static final String STATUS_BAR_SHOW_TICKER = "status_bar_show_ticker";
+
+        /**
+         * Ticker animation
+         * 0: Fade animation
+         * 1: Scrolling ticker
+         * @hide
+         */
+	@Readable
+        public static final String STATUS_BAR_TICKER_ANIMATION_MODE =
+                "status_bar_ticker_animation_mode";
+
+        /**
+         * Status bar ticker duration in milliseconds.
+         * @hide
+         */
+	@Readable
+        public static final String STATUS_BAR_TICKER_TICK_DURATION =
+                "status_bar_ticker_tick_duration";
 
         /**
          * Indicates that the user has not started setup personalization.
