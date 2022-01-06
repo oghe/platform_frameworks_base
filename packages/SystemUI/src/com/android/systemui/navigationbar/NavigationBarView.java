@@ -108,6 +108,7 @@ public class NavigationBarView extends FrameLayout implements
     private final int mNavColorSampleMargin;
     private final SysUiState mSysUiFlagContainer;
 
+    // The current view is one of mHorizontal or mVertical depending on the current configuration
     View mCurrentView = null;
     private View mVertical;
     private View mHorizontal;
@@ -472,6 +473,18 @@ public class NavigationBarView extends FrameLayout implements
 
     public View getCurrentView() {
         return mCurrentView;
+    }
+
+    /**
+     * Applies {@param consumer} to each of the nav bar views.
+     */
+    public void forEachView(Consumer<View> consumer) {
+        if (mVertical != null) {
+            consumer.accept(mVertical);
+        }
+        if (mHorizontal != null) {
+            consumer.accept(mHorizontal);
+        }
     }
 
     public RotationButtonController getRotationButtonController() {

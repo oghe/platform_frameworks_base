@@ -14,30 +14,39 @@
  * limitations under the License.
  */
 package com.android.systemui.biometrics;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * UDFPS enrollment progress bar.
  */
 public class UdfpsEnrollProgressBarDrawable extends Drawable {
     private static final String TAG = "UdfpsProgressBar";
+
     private static final float SEGMENT_GAP_ANGLE = 12f;
+
     @NonNull private final Context mContext;
+
     @Nullable private UdfpsEnrollHelper mEnrollHelper;
     @NonNull private List<UdfpsEnrollProgressBarSegment> mSegments = new ArrayList<>();
     private int mTotalSteps = 1;
     private int mProgressSteps = 0;
     private boolean mIsShowingHelp = false;
+
     public UdfpsEnrollProgressBarDrawable(@NonNull Context context) {
         mContext = context;
     }
+
     void setEnrollHelper(@Nullable UdfpsEnrollHelper enrollHelper) {
         mEnrollHelper = enrollHelper;
         if (enrollHelper != null) {
@@ -54,33 +63,41 @@ public class UdfpsEnrollProgressBarDrawable extends Drawable {
             invalidateSelf();
         }
     }
+
     void onEnrollmentProgress(int remaining, int totalSteps) {
         mTotalSteps = totalSteps;
         updateState(getProgressSteps(remaining, totalSteps), false /* isShowingHelp */);
     }
+
     void onEnrollmentHelp(int remaining, int totalSteps) {
         updateState(getProgressSteps(remaining, totalSteps), true /* isShowingHelp */);
     }
+
     void onLastStepAcquired() {
         updateState(mTotalSteps, false /* isShowingHelp */);
     }
+
     private static int getProgressSteps(int remaining, int totalSteps) {
         // Show some progress for the initial touch.
         return Math.max(1, totalSteps - remaining);
     }
+
     private void updateState(int progressSteps, boolean isShowingHelp) {
         updateProgress(progressSteps);
         updateFillColor(isShowingHelp);
     }
+
     private void updateProgress(int progressSteps) {
         if (mProgressSteps == progressSteps) {
             return;
         }
         mProgressSteps = progressSteps;
+
         if (mEnrollHelper == null) {
             Log.e(TAG, "updateState: UDFPS enroll helper was null");
             return;
         }
+
         int index = 0;
         int prevThreshold = 0;
         while (index < mSegments.size()) {
@@ -96,9 +113,11 @@ public class UdfpsEnrollProgressBarDrawable extends Drawable {
                 segment.updateProgress(segmentProgress);
                 break;
             }
+
             index++;
             prevThreshold = thresholdSteps;
         }
+
         if (progressSteps >= mTotalSteps) {
             for (final UdfpsEnrollProgressBarSegment segment : mSegments) {
                 segment.startCompletionAnimation();
@@ -109,11 +128,13 @@ public class UdfpsEnrollProgressBarDrawable extends Drawable {
             }
         }
     }
+
     private void updateFillColor(boolean isShowingHelp) {
         if (mIsShowingHelp == isShowingHelp) {
             return;
         }
         mIsShowingHelp = isShowingHelp;
+
         for (final UdfpsEnrollProgressBarSegment segment : mSegments) {
             segment.updateFillColor(isShowingHelp);
         }
@@ -123,10 +144,12 @@ public class UdfpsEnrollProgressBarDrawable extends Drawable {
         canvas.save();
         // Progress starts from the top, instead of the right
         canvas.rotate(-90f, getBounds().centerX(), getBounds().centerY());
+
         // Draw each of the enroll segments.
         for (final UdfpsEnrollProgressBarSegment segment : mSegments) {
             segment.draw(canvas);
         }
+
         canvas.restore();
     }
     @Override

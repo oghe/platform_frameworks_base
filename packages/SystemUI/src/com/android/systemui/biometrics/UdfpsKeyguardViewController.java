@@ -32,8 +32,10 @@ import com.android.systemui.statusbar.phone.UnlockedScreenOffAnimationController
 import com.android.systemui.statusbar.policy.ConfigurationController;
 import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.util.time.SystemClock;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+
 /**
  * Class that coordinates non-HBM animations during keyguard authentication.
  */
@@ -47,6 +49,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
     @NonNull private final UdfpsController mUdfpsController;
     @NonNull private final UnlockedScreenOffAnimationController
             mUnlockedScreenOffAnimationController;
+
     private boolean mShowingUdfpsBouncer;
     private boolean mUdfpsRequested;
     private boolean mQsExpanded;
@@ -57,6 +60,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
     private long mLastUdfpsBouncerShowTime = -1;
     private float mStatusBarExpansion;
     private boolean mLaunchTransitionFadingAway;
+
     /**
      * hidden amount of pin/pattern/password bouncer
      * {@link KeyguardBouncer#EXPANSION_VISIBLE} (0f) to
@@ -97,6 +101,12 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
         mKeyguardViewManager.setAlternateAuthInterceptor(mAlternateAuthInterceptor);
     }
     @Override
+    public void onInit() {
+        super.onInit();
+        mKeyguardViewManager.setAlternateAuthInterceptor(mAlternateAuthInterceptor);
+    }
+
+    @Override
     protected void onViewAttached() {
         super.onViewAttached();
         final float dozeAmount = mStatusBarStateController.getDozeAmount();
@@ -104,6 +114,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
         mStateListener.onDozeAmountChanged(dozeAmount, dozeAmount);
         mStatusBarStateController.addCallback(mStateListener);
         mUdfpsRequested = false;
+
         mLaunchTransitionFadingAway = mKeyguardStateController.isLaunchTransitionFadingAway();
         mKeyguardStateController.addCallback(mKeyguardStateControllerCallback);
         mStatusBarState = mStatusBarStateController.getState();
@@ -122,6 +133,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
     protected void onViewDetached() {
         super.onViewDetached();
         mFaceDetectRunning = false;
+
         mKeyguardStateController.removeCallback(mKeyguardStateControllerCallback);
         mStatusBarStateController.removeCallback(mStateListener);
         mKeyguardViewManager.removeAlternateAuthInterceptor(mAlternateAuthInterceptor);
@@ -156,6 +168,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
         if (mShowingUdfpsBouncer == show) {
             return false;
         }
+
         boolean udfpsAffordanceWasNotShowing = shouldPauseAuth();
         mShowingUdfpsBouncer = show;
         if (mShowingUdfpsBouncer) {
@@ -191,9 +204,11 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
                 || mInputBouncerHiddenAmount != KeyguardBouncer.EXPANSION_VISIBLE)) {
             return false;
         }
+
         if (mLaunchTransitionFadingAway) {
             return true;
         }
+
         if (mStatusBarState != KEYGUARD) {
             return true;
         }
@@ -233,6 +248,15 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
     private boolean hasUdfpsBouncerShownWithMinTime() {
         return (mSystemClock.uptimeMillis() - mLastUdfpsBouncerShowTime) > 200;
     }
+    /**
+     * Whether the udfps bouncer has shown for at least 200ms before allowing touches outside
+     * of the udfps icon area to dismiss the udfps bouncer and show the pin/pattern/password
+     * bouncer.
+     */
+    private boolean hasUdfpsBouncerShownWithMinTime() {
+        return (mSystemClock.uptimeMillis() - mLastUdfpsBouncerShowTime) > 200;
+    }
+
     /**
      * Set the progress we're currently transitioning to the full shade. 0.0f means we're not
      * transitioning yet, while 1.0f means we've fully dragged down.
@@ -351,6 +375,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
                     mView.updateColor();
                 }
             };
+
     private final StatusBar.ExpansionChangedListener mStatusBarExpansionChangedListener =
             new StatusBar.ExpansionChangedListener() {
                 @Override
@@ -359,6 +384,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
                     updateAlpha();
                 }
             };
+
     private final KeyguardStateController.Callback mKeyguardStateControllerCallback =
             new KeyguardStateController.Callback() {
                 @Override
@@ -368,6 +394,7 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
                     updatePauseAuth();
                 }
             };
+
     private final UnlockedScreenOffAnimationController.Callback mUnlockedScreenOffCallback =
             (linear, eased) -> mStateListener.onDozeAmountChanged(linear, eased);
 }

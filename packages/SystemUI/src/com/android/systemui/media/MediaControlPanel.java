@@ -123,7 +123,7 @@ public class MediaControlPanel {
     // Uid for the media app.
     protected int mUid = Process.INVALID_UID;
     private int mSmartspaceMediaItemsCount;
-    private final MediaCarouselController mMediaCarouselController;
+    private MediaCarouselController mMediaCarouselController;
     private final MediaOutputDialogFactory mMediaOutputDialogFactory;
     private final MediaArtworkProcessor mMediaArtworkProcessor;
     private int mAlbumArtRadius;

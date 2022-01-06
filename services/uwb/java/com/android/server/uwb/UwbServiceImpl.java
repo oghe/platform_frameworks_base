@@ -356,7 +356,7 @@ public class UwbServiceImpl extends IUwbAdapter.Stub implements IBinder.DeathRec
     private void handleAirplaneModeEvent() {
         try {
             getVendorUwbAdapter().setEnabled(isEnabled());
-        } catch (RemoteException | IllegalStateException e) {
+        } catch (RemoteException e) {
             Log.e(TAG, "Unable to set UWB Adapter state.", e);
         }
     }

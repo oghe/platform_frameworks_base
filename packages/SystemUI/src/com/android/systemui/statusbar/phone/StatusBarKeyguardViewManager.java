@@ -81,8 +81,10 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     // Delay for showing the navigation bar when the bouncer appears. This should be kept in sync
     // with the appear animations of the PIN/pattern/password views.
     private static final long NAV_BAR_SHOW_DELAY_BOUNCER = 320;
+
     // The duration to fade the nav bar content in/out when the device starts to sleep
     private static final long NAV_BAR_CONTENT_FADE_DURATION = 125;
+
     // Duration of the Keyguard dismissal animation in case the user is currently locked. This is to
     // make everything a bit slower to bridge a gap until the user is unlocked and home screen has
     // dranw its first frame.
@@ -174,6 +176,7 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     private boolean mLastPulsing;
     private int mLastBiometricMode;
     private boolean mQsExpanded;
+
     private OnDismissAction mAfterKeyguardGoneAction;
     private Runnable mKeyguardGoneCancelAction;
     private boolean mDismissActionWillAnimateOnKeyguard;
@@ -495,24 +498,26 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
     public void onStartedWakingUp() {
         mStatusBar.getNotificationShadeWindowView().getWindowInsetsController()
                 .setAnimationsDisabled(false);
-        View currentView = getCurrentNavBarView();
-        if (currentView != null) {
-            currentView.animate()
-                    .alpha(1f)
-                    .setDuration(NAV_BAR_CONTENT_FADE_DURATION)
-                    .start();
+        NavigationBarView navBarView = mStatusBar.getNavigationBarView();
+        if (navBarView != null) {
+            navBarView.forEachView(view ->
+                    view.animate()
+                            .alpha(1f)
+                            .setDuration(NAV_BAR_CONTENT_FADE_DURATION)
+                            .start());
         }
     }
     @Override
     public void onStartedGoingToSleep() {
         mStatusBar.getNotificationShadeWindowView().getWindowInsetsController()
                 .setAnimationsDisabled(true);
-        View currentView = getCurrentNavBarView();
-        if (currentView != null) {
-            currentView.animate()
-                    .alpha(0f)
-                    .setDuration(NAV_BAR_CONTENT_FADE_DURATION)
-                    .start();
+        NavigationBarView navBarView = mStatusBar.getNavigationBarView();
+        if (navBarView != null) {
+            navBarView.forEachView(view ->
+                    view.animate()
+                            .alpha(0f)
+                            .setDuration(NAV_BAR_CONTENT_FADE_DURATION)
+                            .start());
         }
     }
     @Override
@@ -894,20 +899,12 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
         mLastIsDocked = mIsDocked;
         mStatusBar.onKeyguardViewManagerStatesUpdated();
     }
-    /**
-     * Updates the visibility of the nav bar content views.
-     */
-    private void updateNavigationBarContentVisibility(boolean navBarContentVisible) {
-        final NavigationBarView navBarView = mStatusBar.getNavigationBarView();
-        if (navBarView != null && navBarView.getCurrentView() != null) {
-            final View currentView = navBarView.getCurrentView();
-            currentView.setVisibility(navBarContentVisible ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
+
     private View getCurrentNavBarView() {
         final NavigationBarView navBarView = mStatusBar.getNavigationBarView();
         return navBarView != null ? navBarView.getCurrentView() : null;
     }
+
     /**
      * Updates the visibility of the nav bar window (which will cause insets changes).
      */
