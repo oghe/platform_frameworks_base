@@ -180,11 +180,6 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     // See NotificationManagerService.LONG_DELAY
     private static final int TOAST_VISIBLE_TIME = 3500;
 
-    // See NotificationManagerService#scheduleDurationReachedLocked
-    private static final long TOAST_FADE_TIME = 333;
-    // See NotificationManagerService.LONG_DELAY
-    private static final int TOAST_VISIBLE_TIME = 3500;
-
     private final Context mContext;
     private final GlobalActionsManager mWindowManagerFuncs;
     private final AudioManager mAudioManager;
