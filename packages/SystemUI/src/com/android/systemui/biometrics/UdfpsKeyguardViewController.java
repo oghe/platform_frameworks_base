@@ -100,11 +100,6 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
         super.onInit();
         mKeyguardViewManager.setAlternateAuthInterceptor(mAlternateAuthInterceptor);
     }
-    @Override
-    public void onInit() {
-        super.onInit();
-        mKeyguardViewManager.setAlternateAuthInterceptor(mAlternateAuthInterceptor);
-    }
 
     @Override
     protected void onViewAttached() {
@@ -239,14 +234,6 @@ public class UdfpsKeyguardViewController extends UdfpsAnimationViewController<Ud
             mKeyguardViewManager.showBouncer(true);
             mKeyguardViewManager.resetAlternateAuth(false);
         }
-    }
-    /**
-     * Whether the udfps bouncer has shown for at least 200ms before allowing touches outside
-     * of the udfps icon area to dismiss the udfps bouncer and show the pin/pattern/password
-     * bouncer.
-     */
-    private boolean hasUdfpsBouncerShownWithMinTime() {
-        return (mSystemClock.uptimeMillis() - mLastUdfpsBouncerShowTime) > 200;
     }
     /**
      * Whether the udfps bouncer has shown for at least 200ms before allowing touches outside
