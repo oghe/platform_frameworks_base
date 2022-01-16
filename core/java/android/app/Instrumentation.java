@@ -64,7 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-import com.android.internal.util.custom.PixelPropsUtils;
+import com.android.internal.util.miku.PropsUtils;
 
 /**
  * Base class for implementing application instrumentation code.  When running
@@ -1179,7 +1179,7 @@ public class Instrumentation {
                 .instantiateApplication(cl, className);
         app.attach(context);
         String packageName = app.getPackageName();
-        PixelPropsUtils.setProps(packageName);
+        PropsUtils.setProps(packageName);
         return app;
     }
     
@@ -1198,7 +1198,7 @@ public class Instrumentation {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
         String packageName = app.getPackageName();
-        PixelPropsUtils.setProps(packageName);
+        PropsUtils.setProps(packageName);
         return app;
     }
 
