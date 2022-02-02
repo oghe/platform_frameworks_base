@@ -10276,6 +10276,12 @@ public final class Settings {
         public static final String GAME_DASHBOARD_ALWAYS_ON = "game_dashboard_always_on";
 
         /**
+         * @hide
+         */
+        @Readable
+        public static final String SHOW_COMBINED_STATUS_BAR_SIGNAL_ICONS = "show_combined_status_bar_signal_icons";
+
+        /**
          * Gesture navbar length mode.
          * Supported modes: 0 for normal length, 1 for medium and 2 for long.
          * Default 0.
